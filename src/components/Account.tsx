@@ -1,10 +1,7 @@
-import {Link} from "../routes/custom-router";
-import { useEffect, useState } from "react";
-import { Container } from "../components/Container";
 import useSWR, { SWRConfig } from "swr";
-import RenderCache from "../components/RenderCache";
-import NavBar from "./Navbar";
+import { Container } from "../components/Container";
 import Dashboard from "./Dashboard";
+import NavBar from "./Navbar";
 import Wishlist from "./Wishlist";
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json());
@@ -12,15 +9,6 @@ const API_ENDPOINT =
   "https://619bff5868ebaa001753c71f.mockapi.io/api/v1/articles";
 
 const Account = ({ articles, query }) => {
-  const [content, setContent] = useState(null);
-
-  useEffect(() => {
-    console.info("Query: ", query);
-  }, [query]);
-  
-  useEffect(() => {
-    console.info("Index Props: articles ", articles);
-  }, [articles]);
 
   const { data, error } = useSWR(API_ENDPOINT, fetcher);
 

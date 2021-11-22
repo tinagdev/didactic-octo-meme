@@ -8,7 +8,7 @@ const Wishlist = () => {
   const { cache } = useSWRConfig();
 
   useEffect(() => {
-    console.info(cache);
+    // console.info(cache);
   }, [cache]);
 
   return (
@@ -16,6 +16,8 @@ const Wishlist = () => {
       <Link href="/">
         <a>Account Home</a>
       </Link>
+      {cache.length &&
+        cache.map((a) => <li key={a.createdAt}>{a.title}</li>)}
     </Container>
   );
 };

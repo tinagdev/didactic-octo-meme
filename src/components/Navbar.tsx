@@ -21,7 +21,6 @@ const NavBar = ({ navItems }) => {
     );
   };
 
-  console.log(navItems)
   return (
     <nav role="navigation">
       {Object.entries(navItems).map(([key, value]) => {
