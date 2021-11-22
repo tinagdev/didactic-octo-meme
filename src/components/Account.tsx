@@ -4,7 +4,10 @@ import Dashboard from "./Dashboard";
 import NavBar from "./Navbar";
 import Wishlist from "./Wishlist";
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const fetcher = (...args) => {
+  console.info("Client Side - API: Fetcher Call");
+  return fetch(...args).then((res) => res.json())
+};
 const API_ENDPOINT =
   "https://619bff5868ebaa001753c71f.mockapi.io/api/v1/articles";
 
