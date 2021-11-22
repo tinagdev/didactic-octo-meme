@@ -1,56 +1,44 @@
-import {
-  Link as ChakraLink,
-  Text,
-  Code,
-  List,
-  ListIcon,
-  ListItem,
-} from '@chakra-ui/react'
-import { CheckCircleIcon, LinkIcon } from '@chakra-ui/icons'
+import Link from "next/link";
+import { useEffect } from "react";
+import { Container } from "../components/Container";
+import useSWR, { SWRConfig } from "swr";
+import RenderCache from "../components/RenderCache";
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
+const API_ENDPOINT =
+  "https://619bff5868ebaa001753c71f.mockapi.io/api/v1/articles";
 
-const Index = () => (
-  <Container height="100vh">
-    <Hero />
-    <Main>
-      <Text>
-        Example repository of <Code>Next.js</Code> + <Code>chakra-ui</Code> +{' '}
-        <Code>TypeScript</Code>.
-      </Text>
+const Index = ({ articles }) => {
+  useEffect(() => {
+    console.info("Index Props: articles ", articles);
+  }, [articles]);
 
-      <List spacing={3} my={0}>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink
-            isExternal
-            href="https://chakra-ui.com"
-            flexGrow={1}
-            mr={2}
-          >
-            Chakra UI <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-        <ListItem>
-          <ListIcon as={CheckCircleIcon} color="green.500" />
-          <ChakraLink isExternal href="https://nextjs.org" flexGrow={1} mr={2}>
-            Next.js <LinkIcon />
-          </ChakraLink>
-        </ListItem>
-      </List>
-    </Main>
+  const { data, error } = useSWR(API_ENDPOINT, fetcher);
 
-    <DarkModeSwitch />
-    <Footer>
-      <Text>Next ❤️ Chakra</Text>
-    </Footer>
-    <CTA />
-  </Container>
-)
+  if (error) return <div>failed to load</div>;
+  if (!data) return <div>loading...</div>;
+  return (
+    <SWRConfig value={{ provider: () => data }}>
+      <Container height="100vh">
+        <Link href="/hello-world">
+          <a>Hello World Page</a>
+        </Link>
+        {data.map((d) => (
+          <li>{d.title}</li>
+        ))}
+      </Container>
+    </SWRConfig>
+  );
+};
 
-export default Index
+Index.getInitialProps = async (ctx) => {
+  const res = await fetch(
+    "https://619bff5868ebaa001753c71f.mockapi.io/api/v1/articles"
+  );
+  const data = await res.json();
+
+  return {
+    articles: data,
+  };
+};
+export default Index;
